@@ -110,3 +110,25 @@ exports.delete = (req,res)=>{
         });
 
 }
+
+// Calculate Drugs to purchase
+exports.calculatePurchase = (req, res) => {
+    try {
+        Drugdb.find()
+            .then(drugs => {
+                const totalPurchase = drugs.reduce((acc, drug) => {
+                    return acc + (drug.card * drug.pack * drug.perDay);
+                }, 0);
+                res.send({ totalPurchase });
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message: "Error retrieving drug information"
+                });
+            });
+    } catch (error) {
+        res.status(500).send({
+            message: "Error calculating total purchase"
+        });
+    }
+};

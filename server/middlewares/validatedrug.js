@@ -1,9 +1,10 @@
 function validateDrug(req, res, next) {
   const { name, dosage, card, pack, perDay } = req.body;
   // change type of card, pack, perDay should be number
-  req.body.card = Number(card);
-  req.body.pack = Number(pack);
-  req.body.perDay = Number(perDay);
+  numberCard = Number(card);
+  numberPack = Number(pack);
+  numberPerDay = Number(perDay);
+
 
   console.log("Validating drug:", req.body);
   // 1. Name length > 5
@@ -23,18 +24,19 @@ function validateDrug(req, res, next) {
   }
 
   // 3. Card > 1000
-  if (typeof card !== "number" || card <= 1000) {
-    console.log(card);
+  if (typeof numberCard !== "number" || numberCard <= 1000) {
+    console.log(numberCard);
+    console.log(typeof numberCard);
     return res.status(400).json({ error: "Card must be greater than 1000" });
   }
 
   // 4. Pack > 0
-  if (typeof pack !== "number" || pack <= 0) {
+  if (typeof numberPack !== "number" || numberPack <= 0) {
     return res.status(400).json({ error: "Pack must be greater than 0" });
   }
 
   // 5. perDay > 0 and < 90
-  if (typeof perDay !== "number" || perDay <= 0 || perDay >= 90) {
+  if (typeof numberPerDay !== "number" || numberPerDay <= 0 || numberPerDay >= 90) {
     return res.status(400).json({ error: "PerDay must be greater than 0 and less than 90" });
   }
 
