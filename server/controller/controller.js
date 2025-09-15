@@ -111,15 +111,35 @@ exports.delete = (req,res)=>{
 
 }
 
-// Calculate Drugs to purchase
+// Calculate Drugs to purchase following days 
 exports.calculatePurchase = (req, res) => {
+    const days = parseInt(req.params.days, 10); // ép kiểu sang number
+
+    if (isNaN(days) || days <= 0) {
+        return res.status(400).send({ message: "Invalid number of days" });
+    }
+
     try {
         Drugdb.find()
             .then(drugs => {
-                const totalPurchase = drugs.reduce((acc, drug) => {
-                    return acc + (drug.card * drug.pack * drug.perDay);
-                }, 0);
-                res.send({ totalPurchase });
+                const purchaseList = drugs.map(drug => {
+                    const pills = drug.perDay * days;
+
+                    const cards = Math.ceil(pills / drug.card);
+                    const packs = Math.ceil(pills / drug.pack);
+
+                    return {
+                        name: drug.name,
+                        perDay: drug.perDay,
+                        days,
+                        totalPills: pills,
+                        cardsToBuy: cards,
+                        packsToBuy: packs,
+                        cardsPerPack: drug.pack / drug.card
+                    };
+                });
+
+                res.send({ purchaseList });
             })
             .catch(err => {
                 res.status(500).send({

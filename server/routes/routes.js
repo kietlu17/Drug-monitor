@@ -23,5 +23,5 @@ route.post('/api/drugs', validateDrug, errorHandler,controller.create);
 route.get('/api/drugs', errorHandler, controller.find);
 route.put('/api/drugs/:id', validateDrug, errorHandler, controller.update);
 route.delete('/api/drugs/:id', errorHandler, controller.delete);
-
+route.get('/api/drugs/purchase/:days', errorHandler, controller.calculatePurchase);
 module.exports = route;//exports this so it can always be used elsewhere

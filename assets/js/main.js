@@ -53,14 +53,34 @@ if(window.location.pathname == "/manage"){//since items are listed on manage
     })
 }
 
-if(window.location.pathname == "/purchase"){
-//$("#purchase_table").hide();
+if (window.location.pathname == "/purchase") {
+    $("#drug_days").submit(function(event) {
+        event.preventDefault(); // chặn submit form mặc định
 
-$("#drug_days").submit(function(event){//on a submit event on the element with id add_drug
-    event.preventDefault();//prevent default submit behaviour
-    $("#purchase_table").show();
-    days = +$("#days").val();
-    alert("Drugs for " + days + " days!");//alert this in the browser
-})
+        const days = +$("#days").val();
+        alert("Drugs for " + days + " days!");
 
+        const request = {
+            url: `http://${url}/api/drugs/purchase/${days}`,
+            method: "GET"
+        };
+
+        $.ajax(request).done(function(response) {
+            // response dạng { purchaseList: [...] }
+            const tbody = document.getElementById('purchase_table_body');
+            tbody.innerHTML = ""; // clear bảng cũ
+
+            response.purchaseList.forEach(function(drug, index) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${drug.name}</td>
+                    <td>${drug.cardsToBuy} cards ( ${drug.cardsPerPack} per pack )</td>
+                    <td>${drug.packsToBuy} packs</td>
+                `;
+                tbody.appendChild(row);
+            });
+        });
+    });
 }
+
